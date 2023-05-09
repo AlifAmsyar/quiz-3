@@ -9,7 +9,8 @@ Content-Type: application/json
 
 {
     "username":"Amsyar",
-    "password":"password"
+    "password":"password",
+    "name":"Amsyar",
+    "email":"Syar@ht.com"
 }
-
 ###

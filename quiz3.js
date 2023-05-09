@@ -10,8 +10,8 @@ app.post('/login', (req, res) => {
 
     let result = login(req.body.username, req.body.password)
 
-    let Token = generateToken(result)
-    res.send(Token)
+    // let Token = generateToken(result)
+    // res.send(Token)
 })
 
 app.get('/', (req, res) => {
@@ -49,12 +49,18 @@ let dbUsers = [
   }
 ]
 
-  function login(username, password) {
-    let matchUser = dbUsers.find(
-        user => user.username == username      //=> what to do with user
-    )
+  async function login(requsername, reqpassword) {
+    // let matchUser = dbUsers.find(
+    //     user => user.username == username      //=> what to do with user
+    // )
+     let matchUser = await client.db('benr2434')
+        .collection('users')
+        .findOne({username:{ $eq: requsername} })
+
+    console.log(matchUser)
+    
     if (!matchUser) return "User not found!"
-    if (matchUser.password == password) 
+    if (matchUser.password == reqpassword) 
     {
         return matchUser
     } else
@@ -63,8 +69,17 @@ let dbUsers = [
     }
     }
 
+// function register(requsername, reqpassword, reqname, reqemail) {
+//   dbUsers.push({
+//       username: requsername,
+//       password: reqpassword,
+//       name: reqname,
+//       email: reqemail
+//   })
+// }
+
 function register(requsername, reqpassword, reqname, reqemail) {
-  dbUsers.push({
+  client.db('benr2434').collection('users').insertOne({
       username: requsername,
       password: reqpassword,
       name: reqname,
@@ -97,3 +112,20 @@ function verifyToken (req,res,next){
     next()
   });
 }
+
+
+const { MongoClient, ServerApiVersion } = require('mongodb');
+const uri = "mongodb+srv://AlifAmsyar:Amsyarsusi1112!@amsyar.slnbl2c.mongodb.net/?retryWrites=true&w=majority";
+
+// Create a MongoClient with a MongoClientOptions object to set the Stable API version
+const client = new MongoClient(uri, {
+  serverApi: {
+    version: ServerApiVersion.v1,
+    strict: true,
+    deprecationErrors: true,
+  }
+});
+
+client.connect().then(res => {
+  console.log(res)
+})
